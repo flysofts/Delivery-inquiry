@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
 
 
 interface TrackingDetail {
@@ -16,6 +14,7 @@ interface TrackingDetail {
             "code": null;
             "remark": null;
 }
+
 interface PackageData{
   "adUrl": null;
   "complete": true;
@@ -39,38 +38,13 @@ interface PackageData{
   "completeYN": string
 
 }
-/*
-{
-    "adUrl": "",
-    "complete": true,
-    "invoiceNo": "363908752875",
-    "itemImage": "",
-    "itemName": "08 [40000] 잡화.서적 34",
-    "level": 6,
-    "receiverAddr": "",
-    "receiverName": "",
-    "recipient": "",
-    "result": "Y",
-    "senderName": "",
-    "trackingDetails": ,
-    "orderNumber": null,
-    "estimate": "15~17시",
-    "productInfo": null,
-    "zipCode": null,
-    "lastDetail": ,
-    "lastStateDetail":,
-    "firstDetail":,
-    "completeYN": "Y"
-}
-*/
-/*
 
-*/
 interface Company {
   International : string,
   Code: string;
   Name: string;
 }
+
 interface ThemeColor {
   [key: string] : {
     back: string;
@@ -83,25 +57,26 @@ interface ThemeColor {
     border: string;
     rgb: string;
   }
-// 2중객체이여서 []가 앞에 들어갑니다
-// 2중 객체에서는 index값을 못씁니다 number 불가능
+// 2중객체이여서 []가 앞에 들어감
+// 2중 객체에서는 index값을 못씀 number 불가능
 
 }
+
 interface ButtonType {
   name: string;
   theme: string;
 }
+
 function App() {
   
   const [carriers, setCarriers] = useState<Company[]>([]);
-  // 밑에  필터된 값을 넣을겁니다
   const [allCarriers, setAllCarriers] = useState<Company[]>([]);
   // 전체값(필터되는)
   const [theme, setTheme] = useState<string>('default');
   //객체 안에 객체
   const [tCode, setTcode] = useState<string>('04'); // 대한통운이여서 04 입력
   const [tinvoice, setTinvoce] =useState<string>(''); // 실제 운송장 번호
-  const [tname, setTname] = useState<string>('CJ대한통운');
+  const [tname, setTname] = useState<string>('CJ대한통운'); // 실제 택배사 이름
   const [isBtn, setIsBtn] = useState<number |null>(null);
   const [infoTracking, setInfoTracking] = useState<PackageData | null>(null);
 
@@ -158,10 +133,8 @@ function App() {
       
       try{
         const res = await fetch(`https://info.sweettracker.co.kr/api/v1/companylist?t_key=${process.env.REACT_APP_API_KEY}`);
-        
-        const data = await res.json();
-          
-        console.log(data)
+        const data = await res.json();         
+        // console.log(data)
         setCarriers(data.Company);
         setAllCarriers(data.Company);
         setIsLoading(false);
@@ -179,8 +152,8 @@ function App() {
     setIsBtn(BtnNumber);
     setTcode(code);
     setTname(name);
-    //국내,외 필터 true는 외국 false는 국내택배 입니다. 
-    const isInternational = BtnNumber === 2? 'true' : 'false';
+    //국내,외 필터 true는 외국 false는 국내택배
+    const isInternational = BtnNumber === 2 ? 'true' : 'false';
     const filterCarriers = allCarriers.filter((e) => e.International === isInternational);
     setCarriers(filterCarriers)
     
@@ -196,8 +169,8 @@ function App() {
   }
     setTinvoce(value);
   }
-  // 위의 코드는 숫자를 제외한 모든 문자를 제거후, 숫자만을 setTinvoce 함수를 통해 설정합니다.
-  // 이를 통해서 입력칸에 숫자만 입력할 수 있도록 필터링 해줍니다. 0~9까지 숫자만 입력가능하게
+  // 위의 코드는 숫자를 제외한 모든 문자를 제거후, 숫자만을 setTinvoce 함수를 통해 설정함
+  // 이를 통해서 입력칸에 숫자만 입력할 수 있도록 필터링 해줌 0~9까지 숫자만 입력가능하게
   const PostSumbmit = async ()=>{
     setIsLoading(true);
     setIsShow(false);
@@ -220,10 +193,7 @@ function App() {
       }
       if(data.code === '104' ||data.code === '105'){
         setError(data.msg);
-        
-
-      }else{
-        
+      }else{   
         setInfoTracking(data);
         setIsShow(true);
       }
@@ -294,7 +264,6 @@ function App() {
   </rect>
 </g>
 </svg>
-
       </div>
     </div>
 
@@ -326,9 +295,7 @@ function App() {
         const result = carriers.filter((e)=> e.Code ===
         result_code);
         setTname(result[0].Name);
-      }}>
-        
-        
+      }}>   
         {
           carriers &&
           carriers.map((e,i)=>{
@@ -336,9 +303,7 @@ function App() {
               <option key={i} value={e.Code}>{e.Name}</option>
             )
           })
-        }
-        
-        
+        }   
       </select>
       <div className="basis-full mt-4 py-4 border-b text-center">
         <input type="text" onInput={blindNumber} placeholder="운송장 번호를 입력해주세요"className={`w-[100%] border px-5 py-2 rounded-md ${themeColor[theme].outline}`}/>
@@ -354,7 +319,6 @@ function App() {
       </div>}
       
       </div>
-     
       {
       isShow &&
       <>
@@ -381,7 +345,7 @@ function App() {
       </div>
       <div className="bg-white py-5">
         {
-          infoTracking && infoTracking.trackingDetails.slice().reverse().map((e,i)=>{
+          infoTracking && infoTracking.trackingDetails.slice().map((e,i)=>{
             return(
               <div className={`pl-20 py-5 relative group ${themeColor[theme].odd}`} key={i}>
                 <div className={`relative border-2 rounded-full w-2 h-2 -left-[30px] top-10 z-30 ${i === 0 ? `${themeColor[theme].border} ${themeColor[theme].back}` : `bg-white`}`}></div>
